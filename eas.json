@@ -16,10 +16,16 @@
         "buildType": "apk",
         "withoutCredentials": true
       },
-      "channel": "preview"
+      "channel": "preview",
+      "cache": {
+        "key": "v1"
+      }
     },
     "production": {
-      "channel": "production"
+      "channel": "production",
+      "cache": {
+        "key": "v1"
+      }
     }
   },
   "submit": {
