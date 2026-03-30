@@ -35,23 +35,30 @@ async function main() {
   const metadata = JSON.parse(fs.readFileSync(path.join(distDir, 'metadata.json'), 'utf-8'))
   
   // 查找 bundle 文件
-  let bundlePath = path.join(distDir, 'bundles', 'android', 'index.bundle')
-  if (!fs.existsSync(bundlePath)) {
-    bundlePath = path.join(distDir, 'bundles', 'android-unsigned', 'index.bundle')
+  let bundlePath = null
+  
+  // 尝试各种可能的路径
+  const possiblePaths = [
+    path.join(distDir, 'bundles', 'android', 'index.bundle'),
+    path.join(distDir, 'bundles', 'android-unsigned', 'index.bundle'),
+    path.join(distDir, '_expo', 'static', 'js', 'android', 'index.bundle'),
+  ]
+  
+  for (const p of possiblePaths) {
+    if (fs.existsSync(p)) {
+      bundlePath = p
+      break
+    }
   }
-  if (!fs.existsSync(bundlePath)) {
-    // 尝试找 .bin 文件
-    const bundlesDir = path.join(distDir, 'bundles')
-    if (fs.existsSync(bundlesDir)) {
-      const platforms = fs.readdirSync(bundlesDir)
-      for (const platform of platforms) {
-        const platformDir = path.join(bundlesDir, platform)
-        const files = fs.readdirSync(platformDir)
-        const bundleFile = files.find(f => f.endsWith('.bundle') || f.endsWith('.bin'))
-        if (bundleFile) {
-          bundlePath = path.join(platformDir, bundleFile)
-          break
-        }
+  
+  // 如果还没找到，尝试找 .hbc 或 .bin 文件
+  if (!bundlePath) {
+    const staticJsDir = path.join(distDir, '_expo', 'static', 'js', 'android')
+    if (fs.existsSync(staticJsDir)) {
+      const files = fs.readdirSync(staticJsDir)
+      const bundleFile = files.find(f => f.endsWith('.bundle') || f.endsWith('.hbc') || f.endsWith('.bin'))
+      if (bundleFile) {
+        bundlePath = path.join(staticJsDir, bundleFile)
       }
     }
   }
