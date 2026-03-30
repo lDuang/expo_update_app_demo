@@ -27,7 +27,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Expo 更新测试</Text>
+      <Text style={styles.title}>Expo 更新测试 - V2</Text>
       <Text style={styles.info}>{updateInfo}</Text>
       <Button title="检查更新" onPress={checkForUpdate} />
       <StatusBar style="auto" />
