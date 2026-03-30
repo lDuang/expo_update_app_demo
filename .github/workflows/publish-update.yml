@@ -33,8 +33,13 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
       - name: Install dependencies
-        run: npm install
+        run: bun install
 
       - name: Determine channel from branch
         id: channel
