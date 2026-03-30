@@ -20,7 +20,7 @@ export default function App() {
       } else {
         alert('已是最新版本');
       }
-    } catch (e) {
+    } catch (e: any) {
       alert('检查更新失败：' + e.message);
     }
   };
