@@ -1,7 +1,9 @@
 const path = require('path')
 const fs = require('fs')
 const FormData = require('form-data')
-const fetch = require('node-fetch')
+
+// 使用全局 fetch（Node 18+ 自带）
+const fetch = global.fetch || require('node-fetch')
 
 const SERVER_URL = process.env.UPDATE_SERVER_URL || 'http://localhost:3001'
 const CHANNEL = process.env.CHANNEL || 'preview'
