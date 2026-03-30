@@ -1,0 +1,62 @@
+name: Publish Update
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: 'Update channel (preview or production)'
+        required: true
+        default: 'preview'
+        type: choice
+        options:
+          - preview
+          - production
+
+env:
+  UPDATE_SERVER_URL: https://expo-test.duapp.dev
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Determine channel from branch
+        id: channel
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "channel=production" >> $GITHUB_OUTPUT
+          else
+            echo "channel=preview" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Export update
+        run: npx expo export -p android --output-dir ./dist
+
+      - name: Upload to update server
+        run: yarn upload
+        env:
+          UPDATE_SERVER_URL: ${{ env.UPDATE_SERVER_URL }}
+          CHANNEL: ${{ steps.channel.outputs.channel }}
+          MESSAGE: ${{ github.event.head_commit.message }}
+
+      - name: Notify result
+        run: |
+          echo "✅ Update published to ${{ steps.channel.outputs.channel }}"
+          echo "   Commit: ${{ github.sha }}"

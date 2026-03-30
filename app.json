@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "ExpoUpdateApp",
+    "slug": "expo-update-app",
+    "version": "1.0.0",
+    "runtimeVersion": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.svg",
+    "splash": {
+      "image": "./assets/splash.svg",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "requestHeaders": {
+        "expo-channel-name": "preview"
+      }
+    },
+    "android": {
+      "package": "com.expo.updateapp"
+    },
+    "ios": {
+      "bundleIdentifier": "com.expo.updateapp"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a591e627-c23b-4054-8fa2-7ab3e175e4fb"
+      }
+    }
+  }
+}

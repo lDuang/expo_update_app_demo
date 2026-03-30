@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="400">
+  <rect width="200" height="400" fill="#ffffff"/>
+  <text x="100" y="200" font-size="24" text-anchor="middle" fill="#007AFF" font-family="Arial">Update App</text>
+</svg>
