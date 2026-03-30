@@ -14,19 +14,55 @@ async function main() {
   console.log('📤 Uploading update to', SERVER_URL)
   console.log('   Channel:', CHANNEL)
 
+  // 打印 dist 目录结构
+  console.log('📁 Dist directory contents:')
+  if (fs.existsSync(distDir)) {
+    const walk = (dir, prefix = '') => {
+      const files = fs.readdirSync(dir)
+      files.forEach(file => {
+        const fullPath = path.join(dir, file)
+        const stat = fs.statSync(fullPath)
+        console.log(`   ${prefix}${stat.isDirectory() ? '📂' : '📄'} ${file}`)
+        if (stat.isDirectory()) walk(fullPath, prefix + '  ')
+      })
+    }
+    walk(distDir)
+  } else {
+    console.error('   dist directory not found!')
+    process.exit(1)
+  }
+
   const metadata = JSON.parse(fs.readFileSync(path.join(distDir, 'metadata.json'), 'utf-8'))
   
-  // 查找 bundle 文件（可能是 index.bundle 或 index.js）
+  // 查找 bundle 文件
   let bundlePath = path.join(distDir, 'bundles', 'android', 'index.bundle')
   if (!fs.existsSync(bundlePath)) {
     bundlePath = path.join(distDir, 'bundles', 'android-unsigned', 'index.bundle')
   }
   if (!fs.existsSync(bundlePath)) {
-    bundlePath = path.join(distDir, 'index.bundle')
+    // 尝试找 .bin 文件
+    const bundlesDir = path.join(distDir, 'bundles')
+    if (fs.existsSync(bundlesDir)) {
+      const platforms = fs.readdirSync(bundlesDir)
+      for (const platform of platforms) {
+        const platformDir = path.join(bundlesDir, platform)
+        const files = fs.readdirSync(platformDir)
+        const bundleFile = files.find(f => f.endsWith('.bundle') || f.endsWith('.bin'))
+        if (bundleFile) {
+          bundlePath = path.join(platformDir, bundleFile)
+          break
+        }
+      }
+    }
   }
   
-  const bundle = fs.readFileSync(bundlePath)
+  if (!bundlePath || !fs.existsSync(bundlePath)) {
+    console.error('❌ Bundle file not found!')
+    process.exit(1)
+  }
+  
   console.log('   Bundle:', bundlePath)
+  const bundle = fs.readFileSync(bundlePath)
 
   const form = new FormData()
   form.append('channel', CHANNEL)
