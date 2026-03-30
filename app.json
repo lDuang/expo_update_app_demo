@@ -5,12 +5,6 @@
     "version": "1.0.0",
     "runtimeVersion": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.svg",
-    "splash": {
-      "image": "./assets/splash.svg",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "updates": {
       "requestHeaders": {
         "expo-channel-name": "preview"
