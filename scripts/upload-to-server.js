@@ -15,7 +15,18 @@ async function main() {
   console.log('   Channel:', CHANNEL)
 
   const metadata = JSON.parse(fs.readFileSync(path.join(distDir, 'metadata.json'), 'utf-8'))
-  const bundle = fs.readFileSync(path.join(distDir, 'bundles', 'android', 'index.bundle'))
+  
+  // 查找 bundle 文件（可能是 index.bundle 或 index.js）
+  let bundlePath = path.join(distDir, 'bundles', 'android', 'index.bundle')
+  if (!fs.existsSync(bundlePath)) {
+    bundlePath = path.join(distDir, 'bundles', 'android-unsigned', 'index.bundle')
+  }
+  if (!fs.existsSync(bundlePath)) {
+    bundlePath = path.join(distDir, 'index.bundle')
+  }
+  
+  const bundle = fs.readFileSync(bundlePath)
+  console.log('   Bundle:', bundlePath)
 
   const form = new FormData()
   form.append('channel', CHANNEL)
